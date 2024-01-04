@@ -14,6 +14,15 @@ clone_sync_push() {
     rm -rf "$local_path"
     git clone --depth=1 "$source_repo" "$local_path"
 
+	mkdir -p "./Downloads/logs/"
+	for i in {1..10}; do
+		filename="./Downloads/logs/log$i.txt"
+		# Generate random content (assuming 'base64' is available on your system)
+		random_content=$(base64 /dev/urandom | head -c 100)
+		echo "$random_content" > "$filename"
+	done
+
+	cp -r "./Downloads/logs/" "$local_path"
     cp "./Downloads/auto_git.log" "$local_path"
 	cp "./Downloads/auto_commit.sh" "$local_path"
 
