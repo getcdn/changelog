@@ -62,26 +62,13 @@ clone_sync_push() {
         git checkout stash@{0} -- . ":!.gitignore"
         git stash drop stash@{0}
 
-        # Commit changes
-        git commit -am "Sync changes from stash"
+        # Commit changes for each file
+        for file in $(git diff --name-only --cached); do
+            git commit -m "Sync changes for $file"
+        done
 
-        # Add files to track it
-        git add -f auto_git.log
-		git add -f auto_commit.sh
-
-		# Remove or modify this condition if you want to force commit and push every time
-		if true; then
-			# Add all changes
-			git add .
-
-			# Commit changes
-			git commit -a -m "Sync changes"
-
-			# Push changes
-			git push --force origin main
-		else
-			echo "No new changes to sync."
-		fi
+        # Push changes
+        git push --force origin main
     )
 }
 
@@ -95,3 +82,4 @@ mkdir -p "$local_path_changelog"
 
 # Clone, sync, and push changes for each repository
 clone_sync_push "$source_repo_changelog" "$destination_repo_changelog" "$local_path_changelog" "changelog"
+
