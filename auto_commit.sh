@@ -10,34 +10,34 @@ clone_sync_push() {
     current_date=$(date +"%Y-%m-%d %H:%M:%S")
     echo "[$current_date] Cloning, syncing, and pushing changes for $repo_name"
 
-	# Clone the source repository
+    # Clone the source repository
     rm -rf "$local_path"
     git clone --depth=1 "$source_repo" "$local_path"
 
-	mkdir -p "./Downloads/logs/"
-	for i in {1..10}; do
-		filename="./Downloads/logs/log$i.txt"
-		# Generate random content (assuming 'base64' is available on your system)
-		random_content=$(base64 /dev/urandom | head -c 100)
-		echo "$random_content" > "$filename"
-	done
+    mkdir -p "./Downloads/logs/"
+    for i in {1..10}; do
+        filename="./Downloads/logs/log$i.txt"
+        # Generate random content (assuming 'base64' is available on your system)
+        random_content=$(base64 /dev/urandom | head -c 100)
+        echo "$random_content" > "$filename"
+    done
 
-	cp -r "./Downloads/logs/" "$local_path"
+    cp -r "./Downloads/logs/" "$local_path"
     cp "./Downloads/auto_git.log" "$local_path"
-	cp "./Downloads/auto_commit.sh" "$local_path"
+    cp "./Downloads/auto_commit.sh" "$local_path"
 
     (
         cd "$local_path" || exit 1
-		
-		# Add auto_git.log to .gitignore	
+
+        # Add auto_git.log to .gitignore    
         if ! grep -q "auto_git.log" .gitignore; then
             echo "auto_git.log" >> .gitignore
-		fi
-		
-		# Add auto_commit.sh to .gitignore	
+        fi
+
+        # Add auto_commit.sh to .gitignore    
         if ! grep -q "auto_commit.sh" .gitignore; then
             echo "auto_commit.sh" >> .gitignore
-		fi
+        fi
 
         # Set the correct remote URL for the destination repository
         git remote set-url origin "$destination_repo"
@@ -64,6 +64,7 @@ clone_sync_push() {
 
         # Commit changes for each file
         for file in $(git diff --name-only --cached); do
+            git add "$file"
             git commit -m "Sync changes for $file"
         done
 
