@@ -65,7 +65,8 @@ clone_sync_push() {
         # Commit changes for each file
         for file in $(git diff --name-only --cached); do
             git add "$file"
-            git commit -m "Sync changes for $file"
+            filename=$(basename "$file")
+            git commit -m "Sync changes for $filename"
         done
 
         # Push changes
